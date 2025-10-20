@@ -1,11 +1,11 @@
-package main.java.com.mytasks.service;
+package com.mytasks.service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import main.java.com.mytasks.model.Task;
-import main.java.com.mytasks.util.JsonUtil;
+import com.mytasks.model.Task;
+import com.mytasks.util.JsonUtil;
 
 public class TaskManager {
     // data controller

@@ -1,4 +1,4 @@
-package main.java.com.mytasks.model;
+package com.mytasks.model;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +13,7 @@ public class Task {
     public Task(int id, String title, String description, LocalDateTime deadline,
                 Status status, Priority priority){
         this.id = id;
+        this.title = title;
         this.description = description;
         this.deadline = deadline;
         this.status = status;
@@ -57,6 +58,14 @@ public class Task {
         }
         public void setPriority(Priority priority){
                 this.priority = priority;
+        }
+
+        public String getDescription(){
+                return description;
+        }
+
+        public void setDescription(String description){
+                this.description = description;
         }
 
         @Override

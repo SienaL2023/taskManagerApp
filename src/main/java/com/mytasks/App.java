@@ -1,22 +1,38 @@
-package main.java.com.mytasks;
+package com.mytasks;
 
 import java.time.LocalDateTime;
 
-import main.java.com.mytasks.model.Priority;
-import main.java.com.mytasks.model.Status;
-import main.java.com.mytasks.model.Task;
-import main.java.com.mytasks.service.TaskManager;
+import com.mytasks.model.Priority;
+import com.mytasks.model.Status;
+import com.mytasks.model.Task;
+import com.mytasks.service.TaskManager;
 // import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.util.List;
+
+import com.mytasks.ui.ConsoleUI;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        Task task = new Task(0, "Test", "sample entry", LocalDateTime.now(), Status.PENDING, Priority.LOW);
-        Task task2 = new Task(2, null, null, null, null, null);
-        // System.out.println(task.toString());
         TaskManager taskManager = new TaskManager();
-        taskManager.addTask(task);
-        taskManager.addTask(task2);
-        taskManager.deleteTask(0);
+        ConsoleUI ui = new ConsoleUI(taskManager);
+        ui.start();
+        
+        // Task task = new Task(0, "Test", "Test Task", LocalDateTime.parse("2025-09-11T10:15"), Status.PENDING, Priority.LOW);
+        // Task task1 = new Tas1k(1, "Test2", "Test Task", LocalDateTime.parse("2025-09-11T10:15"), Status.PENDING, Priority.LOW);
+
+        // System.out.println(task.toString());
+        // System.out.println(task1.toString());
+        // taskManager.addTask(task);
+        // taskManager.addTask(task1);
+        // taskManager.deleteTask(1);
+
+        // taskManager.deleteTask(0);
+
+        // ObjectMapper mapper = new ObjectMapper();
+        // List <String> data = mapper.readValue(new File("test.json"));
+        // System.out.println("TEST");
     }
 }
 
@@ -46,3 +62,5 @@ public class App {
 // │                   │
 // │                   └── storage/
 // │                       └── tasks.json   (store all the data, not code)
+
+// UI --> new task --> TaskManager --> Modify/updates/ json file
