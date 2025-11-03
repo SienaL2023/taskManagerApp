@@ -1,22 +1,16 @@
 package com.mytasks;
 
-import java.time.LocalDateTime;
-
-import com.mytasks.model.Priority;
-import com.mytasks.model.Status;
-import com.mytasks.model.Task;
+import com.mytasks.service.NotificationMgr;
 import com.mytasks.service.TaskManager;
-// import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.File;
-import java.util.List;
-
 import com.mytasks.ui.ConsoleUI;
 
 public class App {
     public static void main(String[] args) throws Exception {
         TaskManager taskManager = new TaskManager();
-        ConsoleUI ui = new ConsoleUI(taskManager);
+        NotificationMgr notificationMgr = new NotificationMgr();
+
+        
+        ConsoleUI ui = new ConsoleUI(taskManager, notificationMgr);
         ui.start();
         
         // Task task = new Task(0, "Test", "Test Task", LocalDateTime.parse("2025-09-11T10:15"), Status.PENDING, Priority.LOW);
