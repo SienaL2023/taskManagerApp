@@ -2,16 +2,20 @@ package com.mytasks;
 
 import com.mytasks.service.NotificationMgr;
 import com.mytasks.service.TaskManager;
-import com.mytasks.ui.ConsoleUI;
+import com.mytasks.ui.GUI;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        TaskManager taskManager = new TaskManager();
-        NotificationMgr notificationMgr = new NotificationMgr();
+        // TaskManager taskManager = new TaskManager();
+        // NotificationMgr notificationMgr = new NotificationMgr();
 
         
-        ConsoleUI ui = new ConsoleUI(taskManager, notificationMgr);
-        ui.start();
+        // ConsoleUI ui = new ConsoleUI(taskManager, notificationMgr);
+        // ui.start();
+
+        TaskManager tm = new TaskManager();
+        NotificationMgr nm = new NotificationMgr();
+        new GUI(tm, nm).setVisible(true);
         
         // Task task = new Task(0, "Test", "Test Task", LocalDateTime.parse("2025-09-11T10:15"), Status.PENDING, Priority.LOW);
         // Task task1 = new Tas1k(1, "Test2", "Test Task", LocalDateTime.parse("2025-09-11T10:15"), Status.PENDING, Priority.LOW);
@@ -58,3 +62,4 @@ public class App {
 // │                       └── tasks.json   (store all the data, not code)
 
 // UI --> new task --> TaskManager --> Modify/updates/ json file
+// --> schedules a reminder on new task
