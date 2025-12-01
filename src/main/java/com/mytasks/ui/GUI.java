@@ -3,6 +3,9 @@ package com.mytasks.ui;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -12,8 +15,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 import com.mytasks.model.Priority;
+import com.mytasks.model.Status;
+import com.mytasks.model.Task;
 import com.mytasks.service.NotificationMgr;
 import com.mytasks.service.TaskManager;
 
@@ -21,6 +27,9 @@ import com.mytasks.service.TaskManager;
 public class GUI extends JFrame{
     private TaskManager taskManager;
     private NotificationMgr notificationMgr;
+    private String[] columnNames = {"ID", "Title", "Desc", "Deadline", "Status", "Prioity"};
+    private DefaultTableModel taskTableModel;  // helps put in table format
+
 
     public GUI(TaskManager tm, NotificationMgr nm){
         this.taskManager = tm;
@@ -44,15 +53,22 @@ public class GUI extends JFrame{
         JPanel mainPanel = new JPanel(new BorderLayout());
         JTable table;
 
-        String[][] data = {
-             {"0", "Test", "11:05", "high"},
-             {"1", "Test 1","11:07", "low"}
-         };
-        String [] columnNames = {"ID", "Title", "Deadline", "Prioity"};
+        // String[][] data = {
+        //      {"0", "Test", "11:05", "high"},
+        //      {"1", "Test 1","11:07", "low"}
+        //  };
+        // String [] columnNames = {"ID", "Title", "Deadline", "Prioity"};
 
-        table = new JTable(data, columnNames);
         Font newFont = new Font("Comic Sans MS", Font.PLAIN, 14);
-        table.setFont(newFont);
+        taskTableModel = new DefaultTableModel(columnNames, 0){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;  // override the editable method so u cant edit rows :)
+            }
+        };
+        table = new JTable(taskTableModel);
+        // table.SelectionMode(ListSelctionModel.SINGLESELECTION);
+        
         JScrollPane scrollPane = new JScrollPane(table);
         mainPanel.add(scrollPane);
 
@@ -84,9 +100,11 @@ public class GUI extends JFrame{
         // frame.setVisible(true);
 
 
-
+        // BUTTONS
         JButton addBtn = new JButton("Add Task");
-        addBtn.setFont(newFont);
+        addBtn.setFont(newFont);        
+        addBtn.addActionListener(e -> handleAddTask(e));
+
         // addBtn.addActionListener(e -> taskManager.addTask(task));
         JButton viewBtn = new JButton("View Task");
         viewBtn.setFont(newFont);
@@ -96,6 +114,9 @@ public class GUI extends JFrame{
         deleteBtn.setFont(newFont);
         // deleteBtn.addActionListener(e -> taskManager.deleteTask());  // delete based on row not ID
         table.getSelectedRow();
+
+        JButton refreshBtn = new JButton("Refresh Task");
+        refreshBtn.setFont(newFont);
         
 
         JPanel btnPanel = new JPanel(new FlowLayout());
@@ -104,6 +125,7 @@ public class GUI extends JFrame{
         btnPanel.add(addBtn, BorderLayout.WEST);
         btnPanel.add(viewBtn, BorderLayout.CENTER);
         btnPanel.add(deleteBtn, BorderLayout.EAST);
+        btnPanel.add(refreshBtn, BorderLayout.EAST);
 
         btnPanel.setFont(newFont);
         add(mainPanel);
@@ -111,13 +133,15 @@ public class GUI extends JFrame{
         
     }
 
-
-    private void addTaskRow(){
-        // diag table:
+    // to create a task
+    private void handleAddTask(ActionEvent e){
+        // diag table
         // list out everything u need (task name, description, deadline, priority)
         //      this will be a JTextField
         // add all that info into a list
 
+        
+        // words in the pop out window
         JTextField titleField = new JTextField();
         JTextField descField = new JTextField();
         JTextField dlField = new JTextField();
@@ -129,6 +153,49 @@ public class GUI extends JFrame{
             "Priority: ", priBox
          };
 
-        JOptionPane.showConfirmDialog(titleField, message,"Add Task", JOptionPane.OK_CANCEL_OPTION);
+         // options for pop out (cancel and ok)
+        int option = JOptionPane.showConfirmDialog(titleField, message,"Add Task", JOptionPane.OK_CANCEL_OPTION);
+
+        if(option == JOptionPane.OK_OPTION){
+            // retrive values from textfield and combobox
+            String title = titleField.getText();
+            // we want it in local date time type
+            LocalDateTime deadLine = LocalDateTime.parse(dlField.getText());
+            String desc = descField.getText();
+            Status status = Status.PENDING;
+            Priority prior = (Priority)priBox.getSelectedItem();  // originally combo box
+            
+            // create new task with those values
+            Task task = new Task(0, title, desc, deadLine, status, prior);
+            
+            taskManager.addTask(task);
+            notificationMgr.scheduleReminder(task); // schedule
+
+            loadTask();  
+        }
+
     }
+
+    // actually creates the new row with the task
+    private void loadTask(){
+        taskTableModel.setRowCount(0); // clears existing rows
+        
+        // holds the task made from handle task
+        ArrayList<Task> tasks = (ArrayList<Task>)taskManager.listTasks(); 
+        for(Task t: tasks){  // to go through all the tasks
+            Object[] row = {
+                t.getID(),
+                t.getTitle(),
+                t.getDescription(),
+                t.getDeadLine(),
+                t.getStatus(),
+                t.getPriority()
+            };
+
+            // adds the task
+            taskTableModel.addRow(row);
+        }
+    
+    }
+
 }
